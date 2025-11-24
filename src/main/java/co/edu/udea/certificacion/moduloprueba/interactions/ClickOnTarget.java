@@ -17,7 +17,7 @@ public class ClickOnTarget implements Interaction {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(Click.on(target));
-        WaitTime.putWaitTimeOf(3000);
+        WaitTime.putWaitTimeOf(2000);
     }
 
     public static ClickOnTarget element(Target target) {

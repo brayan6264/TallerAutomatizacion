@@ -24,36 +24,47 @@ import static org.hamcrest.Matchers.*;
 import static net.serenitybdd.screenplay.GivenWhenThen.*;
 
 public class AccountCreationStepDefinition {
-    public final Actor actor = Actor.named("User");
+    private Actor actor;
+    private WebDriver theDriver;
 
-    @Managed(driver = "chrome", uniqueSession = true)
-    public WebDriver theDriver;
-
-    @Before
-    public void config() {
-        actor.can(BrowseTheWeb.with(theDriver));
-        OnStage.setTheStage(new OnlineCast());
-        OnStage.theActorCalled("User");
+    @Before(order = 1)
+    public void setUp() {
+        actor = OnStage.theActorInTheSpotlight();
+        theDriver = BrowseTheWeb.as(actor).getDriver();
     }
 
     @Given("I am logged into my Parabank account")
     public void iAmLoggedIntoMyAccount() {
-        // Implementar login si es necesario
+        String currentUrl = theDriver.getCurrentUrl();
+        System.out.println("Current URL before navigation: " + currentUrl);
+        
+        if (currentUrl == null || currentUrl.isEmpty() || !currentUrl.contains("parabank")) {
+            return;
+        }
+        
+        theDriver.get("https://parabank.parasoft.com/parabank/overview.htm");
+        WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.urlContains("overview.htm"));
+        System.out.println("Navigated to: " + theDriver.getCurrentUrl());
     }
 
     @When("I request the creation of a Savings account")
     public void iRequestSavingsAccountCreation() {
         actor.attemptsTo(
-            ClickOnTarget.element(AccountCreationPage.OPEN_NEW_ACCOUNT_LINK),
-            SelectOption.byText("SAVINGS", AccountCreationPage.ACCOUNT_TYPE_DROPDOWN)
+            ClickOnTarget.element(AccountCreationPage.OPEN_NEW_ACCOUNT_LINK)
         );
         WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
-        WebElement fromAccountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='fromAccountId']")));
-        if (!fromAccountElement.getTagName().equalsIgnoreCase("select")) {
-            throw new RuntimeException("FROM_ACCOUNT_DROPDOWN is not a <select> element");
-        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("type")));
+        
+        actor.attemptsTo(
+            SelectOption.byValue("1", AccountCreationPage.ACCOUNT_TYPE_DROPDOWN)
+        );
+        
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fromAccountId")));
+        WebElement fromAccountElement = theDriver.findElement(By.id("fromAccountId"));
         Select fromAccountSelect = new Select(fromAccountElement);
         String firstAccountOption = fromAccountSelect.getOptions().get(0).getText();
+        
         actor.attemptsTo(
             SelectOption.byText(firstAccountOption, AccountCreationPage.FROM_ACCOUNT_DROPDOWN),
             ClickOnTarget.element(AccountCreationPage.OPEN_ACCOUNT_BUTTON)
@@ -68,16 +79,20 @@ public class AccountCreationStepDefinition {
     @When("I request the creation of a Checking account")
     public void iRequestCheckingAccountCreation() {
         actor.attemptsTo(
-            ClickOnTarget.element(AccountCreationPage.OPEN_NEW_ACCOUNT_LINK),
-            SelectOption.byText("CHECKING", AccountCreationPage.ACCOUNT_TYPE_DROPDOWN)
+            ClickOnTarget.element(AccountCreationPage.OPEN_NEW_ACCOUNT_LINK)
         );
         WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
-        WebElement fromAccountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='fromAccountId']")));
-        if (!fromAccountElement.getTagName().equalsIgnoreCase("select")) {
-            throw new RuntimeException("FROM_ACCOUNT_DROPDOWN is not a <select> element");
-        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("type")));
+        
+        actor.attemptsTo(
+            SelectOption.byValue("0", AccountCreationPage.ACCOUNT_TYPE_DROPDOWN)
+        );
+        
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fromAccountId")));
+        WebElement fromAccountElement = theDriver.findElement(By.id("fromAccountId"));
         Select fromAccountSelect = new Select(fromAccountElement);
         String firstAccountOption = fromAccountSelect.getOptions().get(0).getText();
+        
         actor.attemptsTo(
             SelectOption.byText(firstAccountOption, AccountCreationPage.FROM_ACCOUNT_DROPDOWN),
             ClickOnTarget.element(AccountCreationPage.OPEN_ACCOUNT_BUTTON)

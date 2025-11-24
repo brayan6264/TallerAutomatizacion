@@ -2,6 +2,7 @@ package co.edu.udea.certificacion.moduloprueba.tasks;
 
 import co.edu.udea.certificacion.moduloprueba.userinterfaces.RegistrationPage;
 import co.edu.udea.certificacion.moduloprueba.interactions.*;
+import co.edu.udea.certificacion.moduloprueba.utils.Util;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.Tasks;
@@ -10,7 +11,11 @@ import net.serenitybdd.screenplay.actions.SendKeys;
 
 public class FillRegistrationForm implements Task {
 
+    private final String username;
 
+    public FillRegistrationForm(String username) {
+        this.username = username;
+    }
 
     @Override
     public <T extends Actor> void performAs(T actor) {
@@ -24,14 +29,18 @@ public class FillRegistrationForm implements Task {
             EnterValue.intoField("050001", RegistrationPage.ZIP_CODE_INPUT),
             EnterValue.intoField("3001234567", RegistrationPage.PHONE_INPUT),
             EnterValue.intoField("123456789", RegistrationPage.SSN_INPUT),
-            EnterValue.intoField("usuarioPrueba", RegistrationPage.USERNAME_INPUT),
+            EnterValue.intoField(username, RegistrationPage.USERNAME_INPUT),
             EnterValue.intoField("Password123.", RegistrationPage.PASSWORD_INPUT),
             EnterValue.intoField("Password123.", RegistrationPage.CONFIRM_PASSWORD_INPUT),
             ClickOnTarget.element(RegistrationPage.REGISTER_BUTTON)
         );
     }
 
+    public static FillRegistrationForm withUsername(String username) {
+        return Tasks.instrumented(FillRegistrationForm.class, username);
+    }
+    
     public static FillRegistrationForm userForm() {
-        return Tasks.instrumented(FillRegistrationForm.class);
+        return Tasks.instrumented(FillRegistrationForm.class, Util.generateRandomUsername());
     }
 }

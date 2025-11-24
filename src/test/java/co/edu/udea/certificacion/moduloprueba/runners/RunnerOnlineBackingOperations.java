@@ -7,9 +7,9 @@ import org.junit.runner.RunWith;
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
         features = {
-            "src/test/resources/features/SingUp.feature",
-            "src/test/resources/features/AccountCreation.feature",
-            "src/test/resources/features/Transactions.feature"
+            "src/test/resources/features/1_SingUp.feature",
+            "src/test/resources/features/2_AccountCreation.feature",
+            "src/test/resources/features/3_Transactions.feature"
         },
         glue = "co.edu.udea.certificacion.moduloprueba.stepdefinitions",
         snippets = CucumberOptions.SnippetType.CAMELCASE,

@@ -19,7 +19,7 @@ public class EnterValue implements Interaction {
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(Enter.theValue(value).into(target));
-        WaitTime.putWaitTimeOf(3000);
+        WaitTime.putWaitTimeOf(2000);
     }
 
     public static EnterValue intoField(String value, Target target) {

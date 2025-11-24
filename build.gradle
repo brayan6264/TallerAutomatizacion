@@ -5,8 +5,8 @@ buildscript {
 }
 
 plugins {
-	id 'io.github.jumosqu12.screenplayarchitecture' version '2.0.1'
-	id 'java'
+    id 'io.github.jumosqu12.screenplayarchitecture' version '2.0.1'
+    id 'java'
     id 'eclipse'
     id 'idea'
 }
@@ -36,26 +36,84 @@ dependencies {
     implementation "net.serenity-bdd:serenity-junit:$rootProject.ext.serenityVersion"
     implementation "net.serenity-bdd:serenity-screenplay:$rootProject.ext.serenityVersion"
     implementation "net.serenity-bdd:serenity-cucumber:$rootProject.ext.serenityCucumberVersion"
+    implementation "net.serenity-bdd:serenity-single-page-report:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-reports:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-cli:$rootProject.ext.serenityVersion"
     implementation 'org.slf4j:slf4j-simple:2.0.5'
     implementation "net.serenity-bdd:serenity-screenplay-webdriver:$rootProject.ext.serenityWebVersion"
-
-    //Test compilation
     testImplementation "junit:junit:$rootProject.ext.junit"
     testImplementation "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrest"
     implementation 'org.slf4j:slf4j-simple:2.0.5'
     testImplementation("io.github.bonigarcia:webdrivermanager:5.4.1")
-
-    //Lombok dependencies
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly  "org.projectlombok:lombok:${lombokVersion}"
-
-    //Additional library
     implementation group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.12.0'
 
 }
 
 tasks.named('test') {
-    // System configs
+    systemProperty 'serenity.take.screenshots', 'AFTER_EACH_STEP'
+    systemProperty 'serenity.reports.show.step.details', 'true'
+    systemProperty 'webdriver.driver', 'chrome'
+    
+    outputs.upToDateWhen { false }
+    testLogging.showStandardStreams = false
+    
+    doFirst {
+        def reportDir = file("${projectDir}/target/site/serenity")
+        if (reportDir.exists()) {
+            reportDir.deleteDir()
+            reportDir.mkdirs()
+            println "✓ Reportes anteriores limpiados"
+        }
+    }
+    
+    finalizedBy 'aggregate'
+}
 
+task aggregate {
+    group = 'Reporting'
+    description = 'Genera el reporte HTML de Serenity'
+    mustRunAfter test
+    
+    doLast {
+        println "Generando reporte HTML de Serenity..."
+        
+        def reportDir = file("${projectDir}/target/site/serenity")
+        
+        if (reportDir.exists()) {
+            def imageFiles = reportDir.listFiles()?.findAll { 
+                it.name.endsWith('.png') || it.name.endsWith('.jpg') 
+            }
+            println "✓ Se encontraron ${imageFiles?.size() ?: 0} imágenes de screenshots"
+            
+            def urls = configurations.runtimeClasspath.files.collect { it.toURI().toURL() } + 
+                       sourceSets.test.output.classesDirs.files.collect { it.toURI().toURL() }
+            def classLoader = new URLClassLoader(urls as URL[], this.class.classLoader)
+            
+            try {
+                def reporterClass = classLoader.loadClass('net.thucydides.core.reports.html.HtmlAggregateStoryReporter')
+                def reporter = reporterClass.getConstructor(String.class).newInstance(reportDir.absolutePath)
+                
+                reporter.setOutputDirectory(reportDir)
+                
+                reporter.generateReportsForTestResultsFrom(reportDir)
+                
+                println "✓ Reporte generado exitosamente en: file:///${reportDir.absolutePath.replace('\\', '/')}/index.html"
+            } catch (Exception e) {
+                println "Error generando reporte: ${e.message}"
+                e.printStackTrace()
+                println "Los archivos JSON están en: ${reportDir.absolutePath}"
+            }
+        } else {
+            println "No se encontró el directorio de reportes de Serenity"
+        }
+    }
+}
+
+gradle.buildFinished {
+    if (tasks.findByPath(':test')?.state?.executed) {
+        println "file:///${projectDir.absolutePath.replace('\\', '/')}/target/site/serenity/index.html"
+    }
 }

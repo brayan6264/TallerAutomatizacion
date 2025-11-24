@@ -24,25 +24,39 @@ import static org.hamcrest.Matchers.*;
 import static net.serenitybdd.screenplay.GivenWhenThen.*;
 
 public class TransactionsStepDefinition {
-    public final Actor actor = Actor.named("User");
+    private Actor actor;
+    private WebDriver theDriver;
 
-    @Managed(driver = "chrome", uniqueSession = true)
-    public WebDriver theDriver;
-
-    @Before
-    public void config() {
-        actor.can(BrowseTheWeb.with(theDriver));
-        OnStage.setTheStage(new OnlineCast());
-        OnStage.theActorCalled("User");
+    @Before(order = 1)
+    public void setUp() {
+        actor = OnStage.theActorInTheSpotlight();
+        theDriver = BrowseTheWeb.as(actor).getDriver();
     }
 
 
     @When("I transfer money from Savings to Checking")
     public void iTransferMoneyFromSavingsToChecking() {
         actor.attemptsTo(
-            SelectOption.byText("SAVINGS", TransferFundsPage.FROM_ACCOUNT_DROPDOWN),
-            SelectOption.byText("CHECKING", TransferFundsPage.TO_ACCOUNT_DROPDOWN),
+            ClickOnTarget.element(TransferFundsPage.TRANSFER_FUNDS_LINK)
+        );
+        
+        WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fromAccountId")));
+        
+        WebElement fromAccountElement = theDriver.findElement(By.id("fromAccountId"));
+        WebElement toAccountElement = theDriver.findElement(By.id("toAccountId"));
+        Select fromAccountSelect = new Select(fromAccountElement);
+        Select toAccountSelect = new Select(toAccountElement);
+        
+        String fromAccount = fromAccountSelect.getOptions().get(0).getText();
+        String toAccount = toAccountSelect.getOptions().size() > 1 ? 
+            toAccountSelect.getOptions().get(1).getText() : 
+            toAccountSelect.getOptions().get(0).getText();
+        
+        actor.attemptsTo(
             EnterValue.intoField("100", TransferFundsPage.AMOUNT_INPUT),
+            SelectOption.byText(fromAccount, TransferFundsPage.FROM_ACCOUNT_DROPDOWN),
+            SelectOption.byText(toAccount, TransferFundsPage.TO_ACCOUNT_DROPDOWN),
             ClickOnTarget.element(TransferFundsPage.TRANSFER_BUTTON)
         );
     }
@@ -59,49 +73,89 @@ public class TransactionsStepDefinition {
 
     @When("I attempt to transfer more money than I have")
     public void iAttemptToTransferMoreThanAvailable() {
+        actor.attemptsTo(
+            ClickOnTarget.element(TransferFundsPage.TRANSFER_FUNDS_LINK)
+        );
+        
         WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
-        WebElement fromAccountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='fromAccountId']")));
-        WebElement toAccountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='toAccountId']")));
-        if (!fromAccountElement.getTagName().equalsIgnoreCase("select") || !toAccountElement.getTagName().equalsIgnoreCase("select")) {
-            throw new RuntimeException("Dropdown is not a <select> element");
-        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fromAccountId")));
+        
+        WebElement fromAccountElement = theDriver.findElement(By.id("fromAccountId"));
+        WebElement toAccountElement = theDriver.findElement(By.id("toAccountId"));
         Select fromAccountSelect = new Select(fromAccountElement);
         Select toAccountSelect = new Select(toAccountElement);
+        
         String fromAccount = fromAccountSelect.getOptions().get(0).getText();
-        String toAccount = toAccountSelect.getOptions().size() > 1 ? toAccountSelect.getOptions().get(1).getText() : toAccountSelect.getOptions().get(0).getText();
+        String toAccount = toAccountSelect.getOptions().size() > 1 ? 
+            toAccountSelect.getOptions().get(1).getText() : 
+            toAccountSelect.getOptions().get(0).getText();
+        
         actor.attemptsTo(
+            EnterValue.intoField("999999", TransferFundsPage.AMOUNT_INPUT),
             SelectOption.byText(fromAccount, TransferFundsPage.FROM_ACCOUNT_DROPDOWN),
             SelectOption.byText(toAccount, TransferFundsPage.TO_ACCOUNT_DROPDOWN),
-            EnterValue.intoField("999999", TransferFundsPage.AMOUNT_INPUT),
             ClickOnTarget.element(TransferFundsPage.TRANSFER_BUTTON)
         );
+    }
+
+    @Then("the system shows the result")
+    public void systemShowsResult() {
+        WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.or(
+            ExpectedConditions.visibilityOfElementLocated(By.id("showResult")),
+            ExpectedConditions.visibilityOfElementLocated(By.id("showError"))
+        ));
     }
 
 
     @Given("I have completed a transfer")
     public void iHaveCompletedATransfer() {
+        actor.attemptsTo(
+            ClickOnTarget.element(TransferFundsPage.TRANSFER_FUNDS_LINK)
+        );
+        
         WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
-        WebElement fromAccountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='fromAccountId']")));
-        WebElement toAccountElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id='toAccountId']")));
-        if (!fromAccountElement.getTagName().equalsIgnoreCase("select") || !toAccountElement.getTagName().equalsIgnoreCase("select")) {
-            throw new RuntimeException("Dropdown is not a <select> element");
-        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fromAccountId")));
+        
+        WebElement fromAccountElement = theDriver.findElement(By.id("fromAccountId"));
+        WebElement toAccountElement = theDriver.findElement(By.id("toAccountId"));
         Select fromAccountSelect = new Select(fromAccountElement);
         Select toAccountSelect = new Select(toAccountElement);
+        
         String fromAccount = fromAccountSelect.getOptions().get(0).getText();
-        String toAccount = toAccountSelect.getOptions().size() > 1 ? toAccountSelect.getOptions().get(1).getText() : toAccountSelect.getOptions().get(0).getText();
+        String toAccount = toAccountSelect.getOptions().size() > 1 ? 
+            toAccountSelect.getOptions().get(1).getText() : 
+            toAccountSelect.getOptions().get(0).getText();
+        
         actor.attemptsTo(
+            EnterValue.intoField("100", TransferFundsPage.AMOUNT_INPUT),
             SelectOption.byText(fromAccount, TransferFundsPage.FROM_ACCOUNT_DROPDOWN),
             SelectOption.byText(toAccount, TransferFundsPage.TO_ACCOUNT_DROPDOWN),
-            EnterValue.intoField("100", TransferFundsPage.AMOUNT_INPUT),
             ClickOnTarget.element(TransferFundsPage.TRANSFER_BUTTON)
         );
+        
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("showResult")));
     }
 
     @When("I access the transaction history")
     public void iAccessTransactionHistory() {
         actor.attemptsTo(
-            ClickOnTarget.element(TransactionHistoryPage.ACCOUNT_NUMBER_LINK),
+            ClickOnTarget.element(TransactionHistoryPage.ACCOUNTS_OVERVIEW_LINK)
+        );
+        
+        WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("accountTable")));
+        
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath("//table[@id='accountTable']//tr"), 1));
+        
+        actor.attemptsTo(
+            ClickOnTarget.element(TransactionHistoryPage.ACCOUNT_NUMBER_LINK)
+        );
+        
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("month")));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("month")));
+        
+        actor.attemptsTo(
             SelectOption.byText("All", TransactionHistoryPage.ACTIVITY_PERIOD_SELECT),
             SelectOption.byText("All", TransactionHistoryPage.TYPE_SELECT),
             ClickOnTarget.element(TransactionHistoryPage.GO_BUTTON)

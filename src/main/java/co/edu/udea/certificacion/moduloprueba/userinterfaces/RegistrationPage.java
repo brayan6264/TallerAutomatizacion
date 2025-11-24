@@ -17,7 +17,8 @@ public class RegistrationPage extends PageObject {
     public static final Target USERNAME_INPUT = Target.the("Username input").locatedBy("//*[@id='customer.username']");
     public static final Target PASSWORD_INPUT = Target.the("Password input").locatedBy("//*[@id='customer.password']");
     public static final Target CONFIRM_PASSWORD_INPUT = Target.the("Confirm Password input").locatedBy("//*[@id='repeatedPassword']");
-    public static final Target REGISTER_BUTTON = Target.the("Register button").locatedBy("//*[@id='customerForm']/table/tbody/tr[13]/td[2]/input");
-    public static final Target SUCCESSFUL_REGISTRATION_TXT = Target.the("Text of registration is successful").locatedBy("//*[@id='rightPanel']/h1");
+    public static final Target REGISTER_BUTTON = Target.the("Register button").locatedBy("//input[@type='submit'][@value='Register']");
+    public static final Target SUCCESSFUL_REGISTRATION_TXT = Target.the("Text of registration is successful").locatedBy("//*[@id='rightPanel']/h1[@class='title']");
+    public static final Target WELCOME_MESSAGE = Target.the("Welcome message").locatedBy("//*[contains(@class,'smallText')]");
     public static final Target ERROR_MESSAGE_TXT = Target.the("Error message").locatedBy("//*[@id='repeatedPassword.errors']");
 }
