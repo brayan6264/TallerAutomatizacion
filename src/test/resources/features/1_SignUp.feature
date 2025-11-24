@@ -1,4 +1,4 @@
-#Autho: Brayan Gomez and Juan Camilo Arboleda
+#Author: Brayan Gomez and Juan Camilo Arboleda
   #Lenguage:en
   Feature: Create a new account
     As an unregistered user i want to create an account so that I can leave comments on the website

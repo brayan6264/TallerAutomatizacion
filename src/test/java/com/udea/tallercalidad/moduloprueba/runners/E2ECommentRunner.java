@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
-        features = "src/test/resources/features/.../",
-        glue = "com.udea.tallercalidad.stepdefinitions",
+        features = "src/test/resources/features",
+        glue = "com.udea.tallercalidad.moduloprueba.stepdefinitions",
         snippets = CucumberOptions.SnippetType.CAMELCASE
 )
-public class Runner {}
+public class E2ECommentRunner {}
