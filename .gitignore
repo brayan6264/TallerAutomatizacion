@@ -1,0 +1,23 @@
+# Gradle and build folders
+.gradle/
+build/
+target/
+
+# IDE files
+*.iml
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Lock files
+*.lock
+
+# Reports
+/reports/
+/test-results/
+
+# Logs
+*.log
