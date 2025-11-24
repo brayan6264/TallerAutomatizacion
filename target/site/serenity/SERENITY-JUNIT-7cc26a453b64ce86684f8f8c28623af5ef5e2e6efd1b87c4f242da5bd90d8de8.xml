@@ -1,1 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="0" name="Create a new account" skipped="0" tests="1" time="3.04" timestamp="2025-11-23 08:48:09"><testcase name="Successful user registration"/></testsuite>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="0" name="Create a new account" skipped="0" tests="2" time="3.65" timestamp="2025-11-24 12:26:11"><testcase name="Successful user registration"/><testcase name="Prevent account creation with an already registered username"/></testsuite>

@@ -12,6 +12,7 @@ public class BuggyPage extends PageObject {
     public static final Target CONFIRMPASSWORD_TXTINP = Target.the("Username text input").locatedBy("//*[@id=\"confirmPassword\"]");
     public static final Target REGISTER_BTN = Target.the("Username text input").locatedBy("/html/body/my-app/div/main/my-register/div/div/form/button");
     public static final Target SUCCESSFUL_REGISTRATION_TXT = Target.the("Text of registration is successful").locatedBy("//div[contains(@class,'result') and contains(@class,'alert-success')]");
+    public static final Target USERNAME_ALREADY_EXIST = Target.the("Text of registration is successful").locatedBy("//div[contains(@class,'result') and contains(@class,'alert-danger')]");
     public static final Target USERNAME_LOGIN_TXTINP = Target.the("Text username input field of the login user").locatedBy("/html/body/my-app/header/nav/div/my-login/div/form/div/input[1]");
     public static final Target PASSWORD_LOGIN_TXTINP = Target.the("Text password username field of the login user").locatedBy("/html/body/my-app/header/nav/div/my-login/div/form/div/input[2]");
     public static final Target TXT_HI_USERNAME = Target.the("text of login successfully").locatedBy("//span[contains(@class,'nav-link') and contains(., 'Hi')]");

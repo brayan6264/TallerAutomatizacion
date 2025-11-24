@@ -38,7 +38,20 @@ public class SignUpStepDefinition {
     @Then("the system should confirm that my registration was completed successfully")
     public void theSystemShouldConfirmThatMyRegistrationWasCompletedSuccessfully() {
         buyer.should(
-                seeThat(ValidateSignUp.registrationMessage(), equalTo("Registration is successful"))
+                seeThat(ValidateSignUp.registrationMessage(buyer), equalTo("Registration is successful"))
+        );
+    }
+
+    @When("I attempt to create a new account using a username that already exists")
+    public void iAttemptToCreateANewAccountUsingAUsernameThatAlreadyExists() {
+        buyer.attemptsTo(FillTheRegister.userForm());
+    }
+
+    @Then("the system should notify me that the username is already taken")
+    public void theSystemShouldNotifyMeThatTheUsernameIsAlreadyTaken() {
+        buyer.should(
+                seeThat(ValidateSignUp.usernameExist(buyer),
+                        equalTo("UsernameExistsException: User already exists"))
         );
     }
 }

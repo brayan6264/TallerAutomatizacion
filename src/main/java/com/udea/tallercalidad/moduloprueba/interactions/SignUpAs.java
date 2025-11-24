@@ -16,7 +16,7 @@ public class SignUpAs implements Interaction {
         WaitTime.putWaitTimeOf(3000);
         actor.attemptsTo(Click.on(REGISTER_BOTTON));
         WaitTime.putWaitTimeOf(3000);
-        actor.attemptsTo(Enter.theValue("usuarioPruebaV9Bray").into(USERNAME_TXTINP));
+        actor.attemptsTo(Enter.theValue("usuarioPruebaV13Bray").into(USERNAME_TXTINP));
         WaitTime.putWaitTimeOf(3000);
         actor.attemptsTo(Enter.theValue("Usuario").into(FIRSTNAME_TXTINP));
         WaitTime.putWaitTimeOf(3000);

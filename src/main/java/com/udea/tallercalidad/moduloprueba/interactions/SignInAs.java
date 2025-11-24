@@ -15,7 +15,7 @@ public class SignInAs implements Interaction {
     public <T extends Actor> void performAs(T actor) {
         //todo activities
         WaitTime.putWaitTimeOf(3000);
-        actor.attemptsTo(Enter.theValue("usuarioPruebaV9Bray").into(USERNAME_LOGIN_TXTINP));
+        actor.attemptsTo(Enter.theValue("usuarioPruebaV13Bray").into(USERNAME_LOGIN_TXTINP));
         WaitTime.putWaitTimeOf(3000);
         actor.attemptsTo(Enter.theValue("Password123.").into(PASSWORD_LOGIN_TXTINP));
         WaitTime.putWaitTimeOf(3000);
