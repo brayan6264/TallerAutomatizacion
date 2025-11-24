@@ -71,7 +71,7 @@ public class AccountCreationStepDefinition {
         );
     }
 
-    @Then("the system confirms the creation of the Savings account")
+    @Then("I saw the confirms of the creation of the Savings account")
     public void systemConfirmsSavingsAccountCreation() {
         actor.should(seeThat(ValidateAccountCreation.accountCreated(), containsString("Account Opened")));
     }
@@ -99,7 +99,7 @@ public class AccountCreationStepDefinition {
         );
     }
 
-    @Then("the system confirms the creation of the Checking account")
+    @Then("I saw the confirms of the creation of the Checking account")
     public void systemConfirmsCheckingAccountCreation() {
         actor.should(seeThat(ValidateAccountCreation.accountCreated(), containsString("Account Opened")));
     }

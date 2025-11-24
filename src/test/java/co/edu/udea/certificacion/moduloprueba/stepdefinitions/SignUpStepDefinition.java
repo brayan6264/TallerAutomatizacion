@@ -61,7 +61,7 @@ public class SignUpStepDefinition {
         );
     }
 
-    @Then("the system confirms that the account was created successfully")
+    @Then("I saw the confirms that the account was created successfully")
     public void systemConfirmsAccountCreated() {
         actor.should(seeThat(ValidateRegistration.registrationMessage(), containsString("Welcome")));
     }

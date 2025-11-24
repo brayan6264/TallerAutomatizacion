@@ -7,4 +7,4 @@
       Scenario: Successful registration
         Given I am on the Parabank registration page
         When I complete the registration with valid information
-        Then the system confirms that the account was created successfully
+        Then I saw the confirms that the account was created successfully

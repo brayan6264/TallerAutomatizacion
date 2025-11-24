@@ -9,13 +9,13 @@
 
       Scenario: Successful transfer
         When I transfer money from Savings to Checking
-        Then the system confirms the transfer
+        Then I saw the confirmation transfer
 
       Scenario: Insufficient funds
         When I attempt to transfer more money than I have
-        Then the system shows the result
+        Then I saw the result
 
       Scenario: View transaction history
         Given I have completed a transfer
         When I access the transaction history
-        Then the system shows the recorded movement
+        Then I saw  the recorded movement

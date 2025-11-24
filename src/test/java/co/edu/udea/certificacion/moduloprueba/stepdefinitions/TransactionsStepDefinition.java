@@ -61,15 +61,11 @@ public class TransactionsStepDefinition {
         );
     }
 
-    @Then("the system confirms the transfer")
+    @Then("I saw the confirmation transfer")
     public void systemConfirmsTransfer() {
         actor.should(seeThat(ValidateTransfer.transferCompleted(), containsString("Transfer Complete")));
     }
 
-    @Then("the balances are updated")
-    public void balancesAreUpdated() {
-        actor.should(seeThat(ValidateTransfer.transferCompleted(), containsString("successfully")));
-    }
 
     @When("I attempt to transfer more money than I have")
     public void iAttemptToTransferMoreThanAvailable() {
@@ -98,7 +94,7 @@ public class TransactionsStepDefinition {
         );
     }
 
-    @Then("the system shows the result")
+    @Then("I saw the result")
     public void systemShowsResult() {
         WebDriverWait wait = new WebDriverWait(theDriver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.or(
@@ -162,7 +158,7 @@ public class TransactionsStepDefinition {
         );
     }
 
-    @Then("the system shows the recorded movement")
+    @Then("I saw  the recorded movement")
     public void systemShowsRecordedMovement() {
         actor.should(seeThat(ValidateTransactionHistory.tableContent(), not(isEmptyOrNullString())));
     }

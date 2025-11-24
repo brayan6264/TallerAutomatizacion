@@ -9,8 +9,8 @@
 
       Scenario: Create initial Savings account
         When I request the creation of a Savings account
-        Then the system confirms the creation of the Savings account
+        Then I saw the confirms of the creation of the Savings account
 
       Scenario: Create a Checking account
         When I request the creation of a Checking account
-        Then the system confirms the creation of the Checking account
+        Then I saw the confirms of the creation of the Checking account
